@@ -3,43 +3,101 @@
 session_start();
 
 const TOTAL_QUADRADOS = 16;
-$indice = 0;
+
+//indices de controle
+$indice = 0; 
 $coluna = 1;
+// para criar a tabela: indice e coluna.
 
-$ind_bcd = 0;
-
+$ind_bcd = 0; //indice de b, c, d
 $indice_letras_session = 1;
+$indice_de_a = 1; //somente para letra a
 
-$indice_bcd = 0;
-
-$indice_de_a = 1;
+//controle de erros
+$erro_linha_coluna = false;
+$erro = [];
 
 if(!array_key_exists('gerou',$_SESSION)) {
 /* letra  a */
 for($i=0;$i<=3;$i++) {
-	$_SESSION['a'][] = $i + 6;
+	$_SESSION['a'][] = 0;
 	$_SESSION['gerou'] = true;
 }
 
 /* letra b */
 for($i=0;$i<=3;$i++) {
-	$_SESSION['b'][] = $i ;
+	$_SESSION['b'][] = 0;
 }
 
 /* letra c */
 for($i=0;$i<=3;$i++) {
-	$_SESSION['c'][] = $i + 3;
+	$_SESSION['c'][] = 0;
 }
 
 /* letra d */
 for($i=0;$i<=3;$i++) {
-	$_SESSION['d'][] = $i + 1;
+	$_SESSION['d'][] = 0;
 }
 }
 /* colunas de controle */
 $letras = array('a','b','c','d');
 
-print_r($_SESSION);
+//print_r($_SESSION);
+
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+	
+	require 'helper.php';
+	
+	if(array_key_exists('coluna',$_POST)) {
+		$colunaT = (string)$_POST['coluna'];
+		$resultadoC = verificarColuna($colunaT);
+		
+		$erro_linha_coluna = false;
+		
+		if($resultadoC == false) {
+			$erro_linha_coluna = true;
+			$erro['coluna'] = "Coluna inválida.";
+		}
+	}
+	
+	if(array_key_exists('linha',$_POST)) {
+		$linhaT = (int)$_POST['linha'];
+		if(!$erro_linha_coluna)
+			$resultadoL = verificarLinha($linhaT);
+		elseif(!$resultadoC)
+			$erro['linha'] = "Linha inválida.";
+	}
+	
+	if(array_key_exists('numero',$_POST)) {
+		$numero = (int)$_POST['numero'];
+	}
+	
+	if($resultadoC && $resultadoL)
+		if($numero >= 1 && $numero <= 16) {
+			
+			switch($linhaT) {
+				case 1:
+					$linhaT = 0;
+					break;
+				case 2:
+					$linhaT = 1;
+					break;
+				case 3:
+					$linhaT = 2;
+					break;
+				case 4:
+					$linhaT = 3;
+					break;
+			}
+			
+			$_SESSION["{$colunaT}"][$linhaT] = $numero;
+			
+			verificar_numero_digitado($numero , $colunaT , $linhaT);
+			
+		}else {
+			$erro['numero'] = "Valor invlálido. Somente 1 a 16.";
+		}
+}
 
 ?>
 <!DOCTYPE html>
@@ -98,13 +156,26 @@ print_r($_SESSION);
 			border: 1px solid black;
 		}
 
-		h1 {
+		h1, h2 {
 			text-align: center;
 		}
 	</style>
 </head>
 <body>
 	<h1>Quadrados Mágicos</h1>
+	
+	<?php if(array_key_exists('coluna',$erro)): ?>
+		<?php echo $erro['coluna']; ?>
+	<?php endif; ?>
+	
+	<?php if(array_key_exists('linha',$erro)): ?>
+		<?php echo $erro['linha']; ?>
+	<?php endif; ?>
+	
+	<?php if(array_key_exists('numero',$erro)): ?>
+		<?php echo $erro['numero']; ?>
+	<?php endif; ?>
+	
 	<!-- exibição da tabela -->
 	<table class="tabela">
 		<tr>
@@ -123,10 +194,6 @@ print_r($_SESSION);
 							<!-- primeiro item A1 -->
 							<td><?php print $_SESSION['a'][0]; ?></td>			
 					<?php else: ?>
-								
-							<?php //if($indice_letras_session <= 3): ?>
-								<?php //$indice_letras_session += 1; ?>
-							<?php //endif; ?>
 				
 							<?php if($i > 1): ?>
 								<?php $indice_letras_session++; ?>
@@ -138,10 +205,7 @@ print_r($_SESSION);
 							
 							<?php $indice_letra = $letras[$indice_letras_session]; ?>
 							
-							<?php print $indice_letra; ?>
-							
 							<td><?php print $_SESSION["{$indice_letra}"][$ind_bcd]; ?></td>
-					
 					<?php endif; ?>
 			<?php else: ?>
 				<?php $ind_bcd++; ?>
@@ -158,7 +222,7 @@ print_r($_SESSION);
 	</table>
 
 	<!-- formulário para envio dos dados -->
-	<form method="GET" class="form">
+	<form method="POST" class="form">
 		<!-- coluna -->
 		<select name="coluna" class="coluna">
 			<option value="a">A</option>
@@ -178,5 +242,49 @@ print_r($_SESSION);
 		<input type="number" name="numero" min=1 max=16 class="numero" value=0>
 		<p><input type="submit" value="Enviar" class="button"></p>
 	</form>
+	
+	<h2>Totais</h2>
+	<table class="tabela">
+		<tr>
+			<th>A</th>
+			<th>B</th>
+			<th>C</th>
+			<th>D</th>
+		</tr>
+		<tr>	
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	<br>
+	
+	<table class="tabela">
+		<tr>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+		<tr>	
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	
+	<br>
+	<table class="tabela">
+		<tr>
+			<th>A diagonal</th>
+			<th>D diagonal</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
 </body>
 </html>
