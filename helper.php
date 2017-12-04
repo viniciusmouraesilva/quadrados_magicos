@@ -56,8 +56,6 @@ function verificar_numero_digitado($numero, $coluna, $linha) {
 			
 			$indice_letra_verificar = $indice_letras_f[$indice_f];
 			
-			print $indice_letra_verificar;
-			
 			if($_SESSION["{$indice_letra_verificar}"][$ind_session] == $numero) {
 				 if($coluna !== $indice_letra_verificar) {
 					$_SESSION["{$indice_letra_verificar}"][$ind_session] = 0; 
@@ -103,6 +101,13 @@ function totalColuna() {
 		}
 	}
 	
+	if(array_key_exists('totalC',$_SESSION)) {
+		unset($_SESSION['totalC']);
+		$_SESSION['totalC'] = $total;
+	}else {
+		$_SESSION['totalC'] = $total;
+	}
+	
 	foreach($total as $coluna) {
 		print "<td>". $coluna . "</td>";
 	}
@@ -134,6 +139,13 @@ function totalLinha() {
 			$controle_letras = 0;
 			$ind++;
 		}
+	}
+	
+	if(array_key_exists('totalL',$_SESSION)) {
+		unset($_SESSION['totalL']);
+		$_SESSION['totalL'] = $total;
+	}else {
+		$_SESSION['totalL'] = $total;
 	}
 	
 	foreach($total as $linha) {
@@ -187,7 +199,63 @@ function totalDiagonalAD() {
 		}
 	}
 	
+	if(array_key_exists('totalD',$_SESSION)) {
+		unset($_SESSION['totalD']);
+		$_SESSION['totalD'] = $array_pesquisa;
+	}else {
+		$_SESSION['totalD'] = $array_pesquisa;
+	}
+	
 	foreach($array_pesquisa as $result) {
 		print "<td>". $result ."</td>";
 	}
 }
+
+function verificarVitoria() {
+
+	$i = 0;
+	
+	if(is_array($_SESSION['totalC'])) {
+		foreach($_SESSION['totalC'] as $total) {
+			if($total == 34) {
+				$i++;
+			}
+		}
+	}
+	
+	if(is_array($_SESSION['totalL'])) {
+		foreach($_SESSION['totalL'] as $total) {
+			if($total == 34) {
+				$i++;
+			}
+		}
+	}
+	
+	if(is_array($_SESSION['totalD'])) {
+		foreach($_SESSION['totalD'] as $total) {
+			if($total == 34) {
+				$i++;
+			}
+		}
+	}
+	
+	if($i == 10) {
+		echo "<script>alert('Você consegui! Parebéns!')</script>";
+	}
+}
+
+function inicializarSessoes() {
+
+	if(!array_key_exists('totalC',$_SESSION)) {
+		$_SESSION['totalC'] = '';
+	}
+	
+	if(!array_key_exists('totalL',$_SESSION)) {
+		$_SESSION['totalL'] = '';
+	}
+	
+	if(!array_key_exists('totalD',$_SESSION)) {
+		$_SESSION['totalD'] = '';
+	}
+}
+

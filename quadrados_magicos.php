@@ -44,6 +44,12 @@ $letras = array('a','b','c','d');
 
 require 'helper.php';
 
+inicializarSessoes();
+
+print_r($_SESSION['totalC']);
+print_r($_SESSION['totalL']);
+print_r($_SESSION['totalD']);
+
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if(array_key_exists('coluna',$_POST)) {
@@ -96,6 +102,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$erro['numero'] = "Valor invlálido. Somente 1 a 16.";
 		}
 }
+
+verificarVitoria();
 
 ?>
 <!DOCTYPE html>
