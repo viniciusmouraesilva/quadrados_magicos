@@ -42,11 +42,9 @@ for($i=0;$i<=3;$i++) {
 /* colunas de controle */
 $letras = array('a','b','c','d');
 
-//print_r($_SESSION);
+require 'helper.php';
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-	require 'helper.php';
 	
 	if(array_key_exists('coluna',$_POST)) {
 		$colunaT = (string)$_POST['coluna'];
@@ -252,10 +250,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<th>D</th>
 		</tr>
 		<tr>	
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<?php totalColuna(); ?>
 		</tr>
 	</table>
 	<br>
@@ -268,10 +263,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<th>4</th>
 		</tr>
 		<tr>	
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<?php totalLinha(); ?>
 		</tr>
 	</table>
 	
@@ -282,8 +274,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<th>D diagonal</th>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
+			<?php totalDiagonalAD(); ?>
 		</tr>
 	</table>
 </body>
