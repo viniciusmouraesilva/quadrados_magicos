@@ -213,6 +213,11 @@ function totalDiagonalAD() {
 
 function verificarVitoria() {
 
+	if(array_key_exists('ganhou',$_SESSION)) {
+		$_SESSION['ganhou'] = false;
+	}
+	
+
 	$i = 0;
 	
 	if(is_array($_SESSION['totalC'])) {
@@ -240,7 +245,7 @@ function verificarVitoria() {
 	}
 	
 	if($i == 10) {
-		echo "<script>alert('Você consegui! Parebéns!')</script>";
+		return true;
 	}
 }
 

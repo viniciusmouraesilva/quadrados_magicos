@@ -1,8 +1,10 @@
 <?php 
-#quadrados mágicos
+#quadrados magicos
 session_start();
 
 const TOTAL_QUADRADOS = 16;
+
+$vitoria = false;
 
 //indices de controle
 $indice = 0; 
@@ -45,10 +47,6 @@ $letras = array('a','b','c','d');
 require 'helper.php';
 
 inicializarSessoes();
-
-print_r($_SESSION['totalC']);
-print_r($_SESSION['totalL']);
-print_r($_SESSION['totalD']);
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
@@ -103,8 +101,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 }
 
-verificarVitoria();
-
+function verificarViaHTML() {
+	$vitoria = verificarVitoria();
+	if($vitoria) {
+		print "Você conseguiu! Parabéns! Uuuuuu... Huuu!";
+	}
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -162,13 +164,20 @@ verificarVitoria();
 			border: 1px solid black;
 		}
 
-		h1, h2 {
+		h1, h2, p {
 			text-align: center;
+		}
+		
+		p {
+			color: red;
+			font-size: 18px;
 		}
 	</style>
 </head>
 <body>
 	<h1>Quadrados Mágicos</h1>
+	
+	<p><?php verificarViaHTML(); ?></p>
 	
 	<?php if(array_key_exists('coluna',$erro)): ?>
 		<?php echo $erro['coluna']; ?>
